@@ -1,0 +1,542 @@
+version: '3.8'
+
+# 网络配置
+networks:
+  malleco-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# 卷配置
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  consul_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  logs_data:
+    driver: local
+
+# 服务配置
+services:
+  # 应用服务实例1
+  mall-eco-api-1:
+    build: .
+    container_name: mall-eco-api-1
+    environment:
+      - NODE_ENV=production
+      - PORT=9000
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=qwerty123
+      - DB_DATABASE=malleco
+      - DB_CONNECTION_LIMIT=20
+      - DB_MIN_CONNECTIONS=5
+      - DB_MAX_CONNECTIONS=50
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - REDIS_CLUSTER_ENABLED=false
+      - RABBITMQ_URLS=amqp://admin:admin123@rabbitmq:5672
+      - RABBITMQ_QUEUE=mall_eco_queue
+      - JWT_SECRET=your_jwt_secret_key_please_change_in_production
+      - JWT_REFRESH_SECRET=your_refresh_secret_key_please_change_in_production
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - TZ=Asia/Shanghai
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - malleco-network
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: '1G'
+        reservations:
+          cpus: '0.5'
+          memory: '512M'
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9000/api/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # 卷挂载
+    volumes:
+      - logs_data:/app/logs
+
+  # 应用服务实例2
+  mall-eco-api-2:
+    build: .
+    container_name: mall-eco-api-2
+    environment:
+      - NODE_ENV=production
+      - PORT=9000
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=qwerty123
+      - DB_DATABASE=malleco
+      - DB_CONNECTION_LIMIT=20
+      - DB_MIN_CONNECTIONS=5
+      - DB_MAX_CONNECTIONS=50
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - REDIS_CLUSTER_ENABLED=false
+      - RABBITMQ_URLS=amqp://admin:admin123@rabbitmq:5672
+      - RABBITMQ_QUEUE=mall_eco_queue
+      - JWT_SECRET=your_jwt_secret_key_please_change_in_production
+      - JWT_REFRESH_SECRET=your_refresh_secret_key_please_change_in_production
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - TZ=Asia/Shanghai
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - malleco-network
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: '1G'
+        reservations:
+          cpus: '0.5'
+          memory: '512M'
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9000/api/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # 卷挂载
+    volumes:
+      - logs_data:/app/logs
+
+  # 应用服务实例3
+  mall-eco-api-3:
+    build: .
+    container_name: mall-eco-api-3
+    environment:
+      - NODE_ENV=production
+      - PORT=9000
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=qwerty123
+      - DB_DATABASE=malleco
+      - DB_CONNECTION_LIMIT=20
+      - DB_MIN_CONNECTIONS=5
+      - DB_MAX_CONNECTIONS=50
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - REDIS_CLUSTER_ENABLED=false
+      - RABBITMQ_URLS=amqp://admin:admin123@rabbitmq:5672
+      - RABBITMQ_QUEUE=mall_eco_queue
+      - JWT_SECRET=your_jwt_secret_key_please_change_in_production
+      - JWT_REFRESH_SECRET=your_refresh_secret_key_please_change_in_production
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - TZ=Asia/Shanghai
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - malleco-network
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: '1G'
+        reservations:
+          cpus: '0.5'
+          memory: '512M'
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9000/api/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # 卷挂载
+    volumes:
+      - logs_data:/app/logs
+
+  # Nginx负载均衡服务
+  nginx:
+    image: nginx:latest
+    container_name: mall-eco-nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/html:/usr/share/nginx/html:ro
+    depends_on:
+      mall-eco-api-1:
+        condition: service_healthy
+      mall-eco-api-2:
+        condition: service_healthy
+      mall-eco-api-3:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - malleco-network
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: '512M'
+        reservations:
+          cpus: '0.5'
+          memory: '256M'
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # MySQL数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: malleco-mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=qwerty123
+      - MYSQL_DATABASE=malleco
+      - MYSQL_USER=malleco
+      - MYSQL_PASSWORD=malleco123
+      - MYSQL_INITDB_SKIP_TZINFO=1
+      - TZ=Asia/Shanghai
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    restart: unless-stopped
+    networks:
+      - malleco-network
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: '2G'
+        reservations:
+          cpus: '0.5'
+          memory: '1G'
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pqwerty123"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Redis缓存服务
+  redis:
+    image: redis:7.0-alpine
+    container_name: malleco-redis
+    ports:
+      - '6379:6379'
+    environment:
+      - TZ=Asia/Shanghai
+    command: redis-server --requirepass "" --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - malleco-network
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '1G'
+        reservations:
+          cpus: '0.25'
+          memory: '512M'
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  # RabbitMQ消息队列服务
+  rabbitmq:
+    image: rabbitmq:3.11-management-alpine
+    container_name: mall-eco-rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+      - RABBITMQ_DEFAULT_VHOST=/
+      - TZ=Asia/Shanghai
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+    networks:
+      - malleco-network
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '1G'
+        reservations:
+          cpus: '0.25'
+          memory: '512M'
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Consul服务注册发现
+  consul:
+    image: consul:1.16-alpine
+    container_name: mall-eco-consul
+    ports:
+      - '8500:8500'
+      - '8600:8600/udp'
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - consul_data:/consul/data
+    command: agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -log-level=info
+    restart: unless-stopped
+    networks:
+      - malleco-network
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '512M'
+        reservations:
+          cpus: '0.25'
+          memory: '256M'
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "consul", "members", "-http-addr=http://localhost:8500"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  # Prometheus监控服务
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.external-url=http://localhost:9090'
+    ports:
+      - "9090:9090"
+    networks:
+      - malleco-network
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '512M'
+        reservations:
+          cpus: '0.25'
+          memory: '256M'
+
+  # Grafana可视化服务
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+      - TZ=Asia/Shanghai
+    ports:
+      - "3000:3000"
+    networks:
+      - malleco-network
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '512M'
+        reservations:
+          cpus: '0.25'
+          memory: '256M'
+
+  # 备份服务
+  backup:
+    image: mcr.microsoft.com/windows/servercore:ltsc2022
+    container_name: backup
+    restart: unless-stopped
+    volumes:
+      - ./backup:/backup
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./nginx:/app/nginx
+      - ./monitoring:/app/monitoring
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=qwerty123
+      - DB_DATABASE=malleco
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - TZ=Asia/Shanghai
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - malleco-network
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "powershell", "-Command", "Test-Path C:\\backup\\data"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '1G'
+        reservations:
+          cpus: '0.25'
+          memory: '512M'
+    # 命令
+    command: ["powershell", "-Command", "while ($true) { Start-Sleep -Seconds 3600 }"]

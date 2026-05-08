@@ -1,0 +1,55 @@
+config:
+  target: 'http://localhost:9000'
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: 'Warm up'
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 50
+      name: 'Ramp up load'
+    - duration: 60
+      arrivalRate: 50
+      name: 'Sustained load'
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+
+scenarios:
+  - name: '保险基础数据测试'
+    flow:
+      - get:
+          url: '/api/insurance/companies'
+      - get:
+          url: '/api/insurance/products'
+      - get:
+          url: '/api/insurance/channels'
+
+  - name: '保单数据测试'
+    flow:
+      - get:
+          url: '/api/insurance/policies?page=1&pageSize=10'
+      - get:
+          url: '/api/insurance/policies/1'
+
+  - name: '统计分析数据测试'
+    flow:
+      - get:
+          url: '/api/insurance/statistics/business?startDate=2026-01-01&endDate=2026-01-31'
+      - get:
+          url: '/api/insurance/statistics/premium-trend?period=month&startDate=2026-01-01&endDate=2026-01-31'
+      - get:
+          url: '/api/insurance/statistics/company-distribution?startDate=2026-01-01&endDate=2026-01-31'
+      - get:
+          url: '/api/insurance/statistics/channel-distribution?startDate=2026-01-01&endDate=2026-01-31'
+      - get:
+          url: '/api/insurance/statistics/settlement?startDate=2026-01-01&endDate=2026-01-31'
+
+  - name: '结算单数据测试'
+    flow:
+      - get:
+          url: '/api/insurance/settlement-records?page=1&pageSize=10'
+      - get:
+          url: '/api/insurance/settlement-records/1'
+      - get:
+          url: '/api/insurance/settlement-records/1/details'
